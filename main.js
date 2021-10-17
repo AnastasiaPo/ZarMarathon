@@ -1,5 +1,5 @@
 const $chat = document.querySelector('.arenas');
-const $random = document.querySelector('.button');
+const $randomButton = document.querySelector('.button');
 
 const player1 = {
     player: 1,
@@ -15,7 +15,7 @@ const player1 = {
 const player2 = {
     player: 2,
     name: 'Subzero',
-    hp: 90,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['Ice Scepter', 'Ice Daggers', 'Kori Blade'],
     attack: function () {
@@ -54,25 +54,41 @@ function createPlayer(playerObj) {
     return $player;
 }
 
+function random() {
+    return Math.ceil(Math.random() * 20)
+}
+
 function playerHp(playerObj) {
     const $playerLife = document.querySelector('.player'+ playerObj.player + ' .life');
-    console.log($playerLife)
-    playerObj.hp -= 20;
+
+    if(playerObj.hp > 0) {
+        playerObj.hp -= random();
+    } else {
+        playerObj.hp = 0;
+    }
+
     $playerLife.style.width = playerObj.hp + '%';
 
-    if(playerObj.hp < 0) {
-        $chat.appendChild(playerLose(playerObj.name));
+    if(playerObj.hp == 0) {
+        $randomButton.disabled = true;
     }
+
+    if(player1.hp == 0) {
+        $chat.appendChild(playerWins(player2.name));
+    } else if(player2.hp == 0) {
+        $chat.appendChild(playerWins(player1.name));
+    }
+
 }
 
-function playerLose(name) {
-    const $loseTitle = createElement('div', 'loseTitle');
-    $loseTitle.innerText = name + ' lose';
+function playerWins(name) {
+    const $winsTitle = createElement('div', 'winsTitle');
+    $winsTitle.innerText = name + ' wins';
 
-    return $loseTitle;
+    return $winsTitle;
 }
 
-$random.addEventListener('click', function () {
+$randomButton.addEventListener('click', function () {
     playerHp(player1);
     playerHp(player2);
 })

@@ -262,7 +262,12 @@ body {
     top: 1px;
 }
 
-.loseTitle {
+.button:disabled {
+    background-color: grey;
+    cursor: auto;
+}
+
+.winsTitle {
     position: absolute;
     top: 25%;
     left: 50%;
