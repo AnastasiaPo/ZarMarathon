@@ -1,5 +1,6 @@
 const $chat = document.querySelector('.arenas');
 const $randomButton = document.querySelector('.button');
+const $reloadBtn = createElement('div', 'reloadWrap');
 
 const player1 = {
     player: 1,
@@ -9,7 +10,10 @@ const player1 = {
     weapon: ['Steel Fans', 'Flying Blade', 'Bo Staff'],
     attack: function () {
         console.log(player1.name + ' Fight...')
-    }
+    },
+    changeHp: changeHp,
+    renderHp: renderHp,
+    elHp: elHp
 }
 
 const player2 = {
@@ -20,7 +24,10 @@ const player2 = {
     weapon: ['Ice Scepter', 'Ice Daggers', 'Kori Blade'],
     attack: function () {
         console.log(player2.name + ' Fight...')
-    }
+    },
+    changeHp: changeHp,
+    renderHp: renderHp,
+    elHp: elHp
 }
 
 function createElement(tag, className) {
@@ -54,43 +61,70 @@ function createPlayer(playerObj) {
     return $player;
 }
 
-function random() {
-    return Math.ceil(Math.random() * 20)
+function getRandom(num) {
+    return Math.ceil(Math.random() * num)
 }
 
-function playerHp(playerObj) {
-    const $playerLife = document.querySelector('.player'+ playerObj.player + ' .life');
-
-    if(playerObj.hp > 0) {
-        playerObj.hp -= random();
+function changeHp(hit) {
+    if(this.hp > hit) {
+        this.hp -= hit;
     } else {
-        playerObj.hp = 0;
+        this.hp = 0;
     }
+}
 
-    $playerLife.style.width = playerObj.hp + '%';
+function elHp() {
+    const $playerLife =  document.querySelector('.player' + this.player + ' .life');
+    return $playerLife;
+}
 
-    if(playerObj.hp == 0) {
-        $randomButton.disabled = true;
-    }
-
-    if(player1.hp == 0) {
-        $chat.appendChild(playerWins(player2.name));
-    } else if(player2.hp == 0) {
-        $chat.appendChild(playerWins(player1.name));
-    }
-
+function renderHp() {
+    this.elHp().style.width = this.hp + '%';
 }
 
 function playerWins(name) {
     const $winsTitle = createElement('div', 'winsTitle');
-    $winsTitle.innerText = name + ' wins';
+
+    if(name) {
+        $winsTitle.innerText = name + ' wins';
+    } else {
+        $winsTitle.innerText = 'draw';
+    }
 
     return $winsTitle;
 }
 
+function createReloadButton() {
+    const $btn = createElement('button', 'button');
+
+    $btn.innerText = 'Restart';
+    $reloadBtn.appendChild($btn);
+    $chat.appendChild($reloadBtn);
+}
+
+$reloadBtn.addEventListener('click', function () {
+    window.location.reload();
+})
+
 $randomButton.addEventListener('click', function () {
-    playerHp(player1);
-    playerHp(player2);
+    player1.changeHp(getRandom(20));
+    player1.renderHp();
+    player2.changeHp(getRandom(20));
+    player2.renderHp()
+
+
+    if(player1.hp == 0 || player2.hp === 0) {
+        $randomButton.disabled = true;
+        createReloadButton();
+    }
+
+    if(player1.hp === 0 && player1.hp < player2.hp) {
+        $chat.appendChild(playerWins(player2.name));
+    } else if(player2.hp === 0 && player2.hp < player1.hp) {
+        $chat.appendChild(playerWins(player1.name));
+    } else if(player1.hp === 0 && player2.hp === 0) {
+        $chat.appendChild(playerWins());
+    }
 })
 
 $chat.appendChild(createPlayer(player1));
