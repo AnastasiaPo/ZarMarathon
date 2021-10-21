@@ -1,6 +1,5 @@
 const $chat = document.querySelector('.arenas');
 const $randomButton = document.querySelector('.button');
-const $reloadBtn = createElement('div', 'reloadWrap');
 const $formFight = document.querySelector('.control');
 
 const HIT = {
@@ -103,36 +102,23 @@ function playerWins(name) {
 }
 
 function createReloadButton() {
+    const $reloadBtn = createElement('div', 'reloadWrap');
     const $btn = createElement('button', 'button');
 
     $btn.innerText = 'Restart';
     $reloadBtn.appendChild($btn);
     $chat.appendChild($reloadBtn);
-}
 
-$reloadBtn.addEventListener('click', function () {
-    window.location.reload();
-})
+    $reloadBtn.addEventListener('click', function () {
+        window.location.reload();
+    })
+}
 
 // $randomButton.addEventListener('click', function () {
 //     player1.changeHp(getRandom(20));
 //     player1.renderHp();
 //     player2.changeHp(getRandom(20));
 //     player2.renderHp()
-//
-//
-//     if(player1.hp == 0 || player2.hp === 0) {
-//         $randomButton.disabled = true;
-//         createReloadButton();
-//     }
-//
-//     if(player1.hp === 0 && player1.hp < player2.hp) {
-//         $chat.appendChild(playerWins(player2.name));
-//     } else if(player2.hp === 0 && player2.hp < player1.hp) {
-//         $chat.appendChild(playerWins(player1.name));
-//     } else if(player1.hp === 0 && player2.hp === 0) {
-//         $chat.appendChild(playerWins());
-//     }
 // })
 
 function checkWin() {
