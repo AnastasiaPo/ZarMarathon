@@ -54,7 +54,7 @@ function checkAttack(enemy, hero) {
         battleLogs('defence', player2, player1, enemy.value);
     }
 }
-function heroAttack() {
+const heroAttack = () => {
     const heroAttack = {};
     for (const item of $formFight) {
         if (item.checked && item.name === 'hit') {

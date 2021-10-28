@@ -1,4 +1,4 @@
-import { attack } from './GamesAction.js';
+import { heroAttack } from './GamesAction.js';
 
 const player1 = {
     player: 1,
@@ -6,9 +6,7 @@ const player1 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
     weapon: ['Steel Fans', 'Flying Blade', 'Bo Staff'],
-    attack: function () {
-        console.log(player1.name + ' Fight...')
-    },
+    heroAttack,
     changeHp,
     renderHp,
     elHp
@@ -20,9 +18,7 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['Ice Scepter', 'Ice Daggers', 'Kori Blade'],
-    attack: function () {
-        console.log(player2.name + ' Fight...')
-    },
+    heroAttack,
     changeHp,
     renderHp,
     elHp
@@ -36,7 +32,7 @@ function elHP() {
     return $elLife;
 }
 function renderHP() {
-    this.elHP().style.width = this.hp + '%';
+    elHP().style.width = this.hp + '%';
 }
 function createElement(tag, className) {
     const $tag = document.createElement(tag);
