@@ -1,28 +1,34 @@
 import { heroAttack } from './GamesAction.js';
 
-const player1 = {
+class Player {
+    constructor(props) {
+        this.player = props.player;
+        this.name = props.name;
+        this.hp = props.hp;
+        this.img = props.img;
+        this.weapon = props.weapon;
+        this.heroAttack = heroAttack;
+        this.changeHP = changeHP;
+        this.renderHP = renderHP;
+        this.elHP = elHP;
+    }
+}
+
+const player1 = new Player({
     player: 1,
     name: 'Kitana',
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-    weapon: ['Steel Fans', 'Flying Blade', 'Bo Staff'],
-    heroAttack,
-    changeHp,
-    renderHp,
-    elHp
-};
+    weapon: ['Steel Fans', 'Flying Blade', 'Bo Staff']
+});
 
-const player2 = {
-    player: 2,
-    name: 'Subzero',
+const player2 = new Player({
+    player: 1,
+    name: 'Kitana',
     hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
-    weapon: ['Ice Scepter', 'Ice Daggers', 'Kori Blade'],
-    heroAttack,
-    changeHp,
-    renderHp,
-    elHp
-};
+    img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
+    weapon: ['Steel Fans', 'Flying Blade', 'Bo Staff']
+});
 
 function changeHP(damage) {
     this.hp > damage ? (this.hp -= damage) : (this.hp = 0);

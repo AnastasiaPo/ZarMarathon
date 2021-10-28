@@ -1,6 +1,6 @@
 import { getRandom } from './Random.js';
 import { battleLogs } from './BattleLogs.js';
-import { getDamage, createElement } from './Players.js';
+import { getDamage, createElement, createPlayer } from './Players.js';
 import { player1, player2 } from './Players.js';
 const $randomBtn = document.querySelector('.button'),
     $formFight = document.querySelector('.control'),
@@ -11,6 +11,13 @@ const $randomBtn = document.querySelector('.button'),
         body: 25,
         foot: 20,
     };
+
+class Game {
+    constructor() {
+        this.start = start;
+    }
+}
+
 function checkWin() {
     const { hp: hp1, name: name1 } = player1;
     const { hp: hp2, name: name2 } = player2;
@@ -83,4 +90,17 @@ function createReloadButton() {
         window.location.reload();
     });
 }
-export { checkWin, enemyAttack, checkAttack, heroAttack, $formFight, $arenas };
+
+function start() {
+    $formFight.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const enemy = enemyAttack();
+        const hero = attack();
+        checkAttack(enemy, hero);
+        checkWin();
+    });
+    $arenas.appendChild(createPlayer(player1));
+    $arenas.appendChild(createPlayer(player2));
+    battleLogs('start', player1, player2);
+}
+export { Game };
