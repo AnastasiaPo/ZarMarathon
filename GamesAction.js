@@ -95,7 +95,7 @@ function start() {
     $formFight.addEventListener('submit', function (e) {
         e.preventDefault();
         const enemy = enemyAttack();
-        const hero = attack();
+        const hero = heroAttack();
         checkAttack(enemy, hero);
         checkWin();
     });

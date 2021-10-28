@@ -34,8 +34,7 @@ function changeHP(damage) {
     this.hp > damage ? (this.hp -= damage) : (this.hp = 0);
 }
 function elHP() {
-    const $elLife = document.querySelector('.player' + this.player + ' .life');
-    return $elLife;
+    return document.querySelector(`.player${this.player} .life`);
 }
 function renderHP() {
     elHP().style.width = this.hp + '%';
@@ -51,15 +50,13 @@ function getDamage(player, damage) {
     player.changeHP(damage);
     player.renderHP();
 }
-function createPlayer(person) {
-    const { player, hp, name, img } = person;
-
-    const $player = createElement('div', 'player' + player),
-        $progressbar = createElement('div', 'progressbar'),
-        $life = createElement('div', 'life'),
-        $name = createElement('div', 'name'),
-        $character = createElement('div', 'character'),
-        $img = createElement('img');
+function createPlayer({ player, hp, name, img }) {
+    const $player = createElement('div', `player${player}`),
+          $progressbar = createElement('div', 'progressbar'),
+          $life = createElement('div', 'life'),
+          $name = createElement('div', 'name'),
+          $character = createElement('div', 'character'),
+          $img = createElement('img');
 
     $player.appendChild($progressbar);
     $progressbar.appendChild($life);
