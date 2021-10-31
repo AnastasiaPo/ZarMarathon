@@ -1,4 +1,4 @@
-import Game from './GamesAction.js';
+import { Game } from './GamesAction.js';
 
 const game = new Game();
 
