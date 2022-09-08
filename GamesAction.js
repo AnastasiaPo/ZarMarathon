@@ -1,20 +1,43 @@
-import { getRandom } from './Random.js';
-import { battleLogs } from './BattleLogs.js';
-import { getDamage, createElement, createPlayer } from './Players.js';
-import { player1, player2 } from './Players.js';
-const $randomBtn = document.querySelector('.button'),
-    $formFight = document.querySelector('.control'),
-    $arenas = document.querySelector('.arenas'),
-    ATTACK = ['head', 'body', 'foot'],
-    HIT = {
-        head: 30,
-        body: 25,
-        foot: 20,
-    };
+import { getRandom, createElement } from './Random.js';
+import { generateLog } from './logs.js';
+import { getDamage, createPlayer, Player } from './Players.js';
+import { ATTACK, HIT } from './Battle.js';
+const $formFight = document.querySelector('.control');
+const $arenas = document.querySelector('.arenas');
+
+let player1;
+let player2;
 
 class Game {
     constructor() {
-        this.start = start;
+        this.getPlayers = async () => {
+            const q = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players');
+            const body = q.then((res) => res.json());
+            return body;
+        };
+        this.start = async () => {
+            const players = await this.getPlayers();
+            const p1 = JSON.parse(localStorage.getItem('player1'));
+            const p2 = players[getRandom(players.length - 1)];
+            player1 = new Player({
+                ...p1,
+                player: 1,
+            });
+            player2 = new Player({
+                ...p2,
+                player: 2,
+            });
+            $arenas.appendChild(createPlayer(player1));
+            $arenas.appendChild(createPlayer(player2));
+            generateLog('start', player1, player2);
+            $formFight.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const enemy = enemyAttack();
+                const hero = attack();
+                checkAttack(enemy, hero);
+                checkWin();
+            });
+        };
     }
 }
 
@@ -22,17 +45,18 @@ function checkWin() {
     const { hp: hp1, name: name1 } = player1;
     const { hp: hp2, name: name2 } = player2;
     if (hp1 <= 0 || hp2 <= 0) {
-        $randomBtn.disabled = true;
+        $formFight.remove();
         createReloadButton();
+
         if (hp1 > hp2) {
             $arenas.appendChild(getWinner(name1));
-            battleLogs('end', player1, player2);
+            generateLog('end', player1, player2);
         } else if (hp1 < hp2) {
             $arenas.appendChild(getWinner(name2));
-            battleLogs('end', player2, player1);
+            generateLog('end', player2, player1);
         } else {
             $arenas.appendChild(getWinner());
-            battleLogs('draw', player1, player2);
+            generateLog('draw', player1, player2);
         }
     }
 }
@@ -48,33 +72,33 @@ function enemyAttack() {
 function checkAttack(enemy, hero) {
     if (hero.hit !== enemy.defence) {
         getDamage(player2, hero.value);
-        battleLogs('hit', player1, player2, hero.value);
+        generateLog('hit', player1, player2, hero.value);
     }
     if (hero.hit === enemy.defence) {
-        battleLogs('defence', player1, player2, hero.value);
+        generateLog('defence', player1, player2, hero.value);
     }
     if (enemy.hit !== hero.defence) {
         getDamage(player1, enemy.value);
-        battleLogs('hit', player2, player1, enemy.value);
+        generateLog('hit', player2, player1, enemy.value);
     }
     if (enemy.hit === hero.defence) {
-        battleLogs('defence', player2, player1, enemy.value);
+        generateLog('defence', player2, player1, enemy.value);
     }
 }
-const heroAttack = () => {
-    const heroAttack = {};
+const attack = () => {
+    const attack = {};
     for (const item of $formFight) {
         if (item.checked && item.name === 'hit') {
-            heroAttack.value = getRandom(HIT[item.value]);
-            heroAttack.hit = item.value;
+            attack.value = getRandom(HIT[item.value]);
+            attack.hit = item.value;
         }
         if (item.checked && item.name === 'defence') {
-            heroAttack.defence = item.value;
+            attack.defence = item.value;
         }
         item.checked = false;
     }
-    return heroAttack;
-}
+    return attack;
+};
 function getWinner(name) {
     const $winTitle = createElement('div', 'winTitle');
     name ? ($winTitle.innerText = name + ' wins') : ($winTitle.innerText = 'Draw');
@@ -87,20 +111,8 @@ function createReloadButton() {
     $reload.appendChild($btn);
     $arenas.appendChild($reload);
     $reload.addEventListener('click', () => {
-        window.location.reload();
+        window.location.pathname = 'index.html';
     });
 }
 
-function start() {
-    $formFight.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const enemy = enemyAttack();
-        const hero = heroAttack();
-        checkAttack(enemy, hero);
-        checkWin();
-    });
-    $arenas.appendChild(createPlayer(player1));
-    $arenas.appendChild(createPlayer(player2));
-    battleLogs('start', player1, player2);
-}
 export { Game };
